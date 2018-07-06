@@ -1,2 +1,2 @@
-1-59/2 * * * * /home/ec2-user/connect_to_stocktwits/fetch_top.sh
-4-59/5 * * * * /home/ec2-user/connect_to_stocktwits/fetch_bottom.sh
+1-59/2 * * * * /home/ec2-user/display-twits/bash/fetch_top.sh
+4-59/5 * * * * /home/ec2-user/display-twits/bash/fetch_bottom.sh

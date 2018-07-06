@@ -3,7 +3,7 @@
 # Variables
 EMAIL=jjj.qqqq@gmail.com
 RESULTS_FILE="results.txt"
-JSONIFIED_FILE="results.json"
+JSONIFIED_FILE="../client/build/results.json"
 declare -a PHRASES=("told y" "LOLOLOLO" "AHAHAHA" "for sure")
 access_token="186cf7e6139a9d6f52af419c3e8c69e85865b84b"
 FILENAME="TOP.txt"
@@ -43,7 +43,6 @@ function grep_results () {
   for PHRASE in "${PHRASES[@]}"
     do
        grep -i "${PHRASE}" $RESULTS_FILE | ifne mail -s "${FILENAME} results" "${EMAIL}"
-       grep -i "${PHRASE}" $RESULTS_FILE >> totalitarian.txt
     done
 }
 
@@ -116,20 +115,27 @@ then
 
     id=$(jq -r '.id' <<< "${line}")
     body=$(jq -r '.body' <<< "${line}")
+    clean_body=${body//_/}
+  # next, replace spaces with underscores
+    clean_body=${clean_body// /_}
+    # now, clean out anything that's not alphanumeric or an underscore
+    clean_body=${clean_body//[^a-zA-Z0-9_]/}
+
+
     username=$(jq -r '.username' <<< "${line}")
     sentiment=$(jq -r '.sentiment' <<< "${line}")
     url="https://stocktwits.com/$username/message/$id"
 
+    key_id="\"id\": $id"
+    key_ticker=$(keyify 'ticker' $ticker)
+    key_url=$(keyify 'url' $url)
+    key_body=$(keyify 'body' $clean_body)
+    key_created_at=$(keyify 'created_at' $created_at)
+    key_sentiment=$(keyify 'sentiment' $sentiment)
 
     if [ ! "$DIFF_MINUTE" -lt "0" ] && [ ! "$DIFF_HOUR" -lt "0" ] && [ ! "$DIFF_DAY" -lt "0" ]
     then
     #  echo "MESSAGE_TIME: HOUR: ${MESSAGE_HOUR}, MINUTE: ${MESSAGE_MINUTE}"
-      key_id="\"id\": $id"
-      key_ticker=$(keyify 'ticker' $ticker)
-      key_url=$(keyify 'url' $url)
-      key_body=$(keyify 'body' $body)
-      key_created_at=$(keyify 'created_at' $created_at)
-      key_sentiment=$(keyify 'sentiment' $sentiment)
       echo -e "{$key_id,$key_ticker,$key_url,$key_body,$key_created_at,$key_sentiment}" >> $RESULTS_FILE
     fi
   done
@@ -139,8 +145,6 @@ else
 fi
 done <$FILENAME
 
-# grep_results
+grep_results
 
 prepare_json_file
-
-# rm $RESULTS_FILE

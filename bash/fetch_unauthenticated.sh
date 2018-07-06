@@ -3,12 +3,14 @@
 # Variables
 EMAIL=jjj.qqqq@gmail.com
 RESULTS_FILE="results.txt"
+INTERMEDIARY="validmsgs.txt"
 JSONIFIED_FILE="../client/build/results.json"
 declare -a PHRASES=("told y" "LOLOLOLO" "AHAHAHA" "for sure")
 access_token="186cf7e6139a9d6f52af419c3e8c69e85865b84b"
 FILENAME="TOP.txt"
-CRON_FREQ=5 # in minutes
+CRON_FREQ=2 # in minutes
 touch $RESULTS_FILE
+touch $INTERMEDIARY
 
 
 # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # =
@@ -43,6 +45,7 @@ function grep_results () {
   for PHRASE in "${PHRASES[@]}"
     do
        grep -i "${PHRASE}" $RESULTS_FILE | ifne mail -s "${FILENAME} results" "${EMAIL}"
+       grep -i "${PHRASE}" $RESULTS_FILE >> $INTERMEDIARY
     done
 }
 
@@ -63,7 +66,7 @@ function prepare_json_file() {
   rm $JSONIFIED_FILE
   touch $JSONIFIED_FILE
   echo "[" >> $JSONIFIED_FILE
-  cat $RESULTS_FILE | paste -sd, - >> $JSONIFIED_FILE
+  cat $INTERMEDIARY | paste -sd, - >> $JSONIFIED_FILE
   echo "]" >> $JSONIFIED_FILE
 }
 
@@ -146,5 +149,8 @@ fi
 done <$FILENAME
 
 grep_results
+
+rm $RESULTS_FILE
+
 
 prepare_json_file

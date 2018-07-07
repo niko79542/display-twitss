@@ -1,0 +1,25 @@
+body {
+  background: #f6f8fa;
+}
+
+#messages {
+  background: #fff;
+  margin: 25px;
+}
+
+.message {
+  background: beige;
+  height: 150px;
+  width: 800px;
+  border: 1px solid rgba(0,0,0,.12);
+  padding: 6px 0 6px 6px;
+}
+
+
+.date {
+
+}
+
+.brag-box {
+
+}

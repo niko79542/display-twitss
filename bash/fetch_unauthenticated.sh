@@ -148,7 +148,7 @@ else
 fi
 done <$FILENAME
 
-grep_results
+# grep_results
 
 rm $RESULTS_FILE
 

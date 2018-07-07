@@ -5,10 +5,10 @@ EMAIL=jjj.qqqq@gmail.com
 RESULTS_FILE="results.txt"
 INTERMEDIARY="validmsgs.txt"
 JSONIFIED_FILE="../client/build/results.json"
-declare -a PHRASES=("told_y" "LOLOLOLO" "AHAHAHA" "for_sure")
+declare -a PHRASES=("told_y" "for_sure")
 access_token="186cf7e6139a9d6f52af419c3e8c69e85865b84b"
 FILENAME="TOP.txt"
-CRON_FREQ=2 # in minutes
+CRON_FREQ=3 # in minutes
 touch $RESULTS_FILE
 touch $INTERMEDIARY
 

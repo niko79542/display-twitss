@@ -28,17 +28,28 @@ $(document).ready(function() {
         return details;
       }
 
+      function parseMessages (messages) { // key is message id.  value is message obj.
+        var myObj = {};
+        var keys = Object.keys(messages);
+        for (var i = 0; i < keys.length; i++) {
+          var msg = messages[keys[i]];
+          var msgId = msg.id;
+          myObj[msgId] = msg;
+        }
+        return myObj;
+      }
+
 
 // =[=====================================]
 
-        allMsgs = data;
         var stockBox = $('#messages');
-        var allMsgKeys = Object.keys(allMsgs).reverse();
-        console.log(allMsgs['0']);
 
-        for (var i = 0; i < allMsgKeys.length; i++) {
-          var key = allMsgKeys[i];
-          var info = allMsgs[key];
+        var byMessageId = parseMessages(data);
+        var myIds = Object.keys(byMessageId).reverse();
+        
+        for (var i = 0; i < myIds.length; i++) {
+          var id = myIds[i];
+          var info = byMessageId[id];
 
           var msgLink = $(document.createElement('a'));
           msgLink.addClass("not-link");
@@ -67,14 +78,5 @@ $(document).ready(function() {
           stockBox.append(msgLink);
 
         }
-
-
-
-
-
-
-
-
-
     });
 });

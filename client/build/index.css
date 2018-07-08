@@ -1,25 +1,76 @@
 body {
   background: #f6f8fa;
+  display: block;
+  font-family: 'Roboto', sans-serif;
+}
+
+div {
+  font-family: 'Roboto', sans-serif;
 }
 
 #messages {
-  background: #fff;
   margin: 25px;
+  width: 85%;
+  margin: 0 auto;
 }
 
 .message {
-  background: beige;
   height: 150px;
-  width: 800px;
   border: 1px solid rgba(0,0,0,.12);
   padding: 6px 0 6px 6px;
+  display: flex;
+  cursor: pointer;
 }
 
 
-.date {
+.details {
+  border-right: 2px solid rgba(0,0,0,.12);
+  padding: 10px 20px;
+  width: 125px;
+  min-width: 115px;
+  display: flex;
+  flex-direction: column;
+}
 
+.ticker {
+  display: block;
+  padding-bottom: 15px;
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 500;
+}
+
+.date {
+  display: block;
+  color: rgba(0,0,0,.54);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 2;
 }
 
 .brag-box {
+  display: block;
+  padding: 20px;
+  width: 600px;
+  max-width: calc(100% - 75px);
+  margin: auto 0;
+  word-wrap: break-word;
+  color: black;
+  font-size: 16px;
+}
 
+.not-link {
+  color: inherit;
+  text-decoration: inherit;
+  cursor: inherit;
+}
+
+#title-card {
+  padding: 20px 125px;
+}
+#title {
+  align-items: center;
+  color: rgba(0,0,0,.54);
+  font-weight: 500;
+  font-size: 36px;
 }

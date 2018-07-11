@@ -1,2 +1,2 @@
-2-59/3 * * * * /home/ec2-user/display-twits/bash/fetch_top.sh
-5-59/6 * * * * /home/ec2-user/display-twits/bash/fetch_bottom.sh
+2-59/3 * * * * /home/ec2-user/display-twits/bash/fetch_top.sh TOP.txt 3
+5-59/6 * * * * /home/ec2-user/display-twits/bash/fetch_bottom.sh BOTTOM.txt 6

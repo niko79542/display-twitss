@@ -7,10 +7,13 @@ INTERMEDIARY="validmsgs.txt"
 JSONIFIED_FILE="../client/build/results.json"
 declare -a PHRASES=("told_y" "for_sure")
 access_token="186cf7e6139a9d6f52af419c3e8c69e85865b84b"
-FILENAME="TOP.txt"
-CRON_FREQ=2 # in minutes
+FILENAME=$1
+CRON_FREQ=$2 # in minutes
 touch $RESULTS_FILE
 touch $INTERMEDIARY
+
+echo $1
+echo $2
 
 
 # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # =
@@ -83,74 +86,71 @@ function prepare_json_file() {
 # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # = # =
 
 set_last_valid_time_and_filename
-# echo "ALLOWED TIME: hour: ${ALLOWED_HOUR}, minute: ${ALLOWED_MINUTE}"
-
-cd "$(dirname "$0")"
-
-
-while read ticker; do
-response=$(curl -X GET https://api.stocktwits.com/api/2/streams/symbol/$ticker.json)
-status=$(jq -r '.response.status' <<< "${response}")
-
-if [ ${status} == '200' ]
-then
-  symbol=$(jq -r '.symbol.symbol' <<< "${response}")
-  messages=$(jq -r '.messages' <<< "${response}")
-
-  parsed_messages=$(jq -r '[ .[] | {id, body, created_at, username: .user.username, sentiment: .entities.sentiment.basic}]' <<< "${messages}")
-
-  jq -c '.[]' <<< "${parsed_messages}" | while read line; do
-
-    created_at=$(jq -r '.created_at' <<< "${line}")
-    MESSAGE_DAY=$(date +%j -d ${created_at})
-    MESSAGE_DAY=$(expr $MESSAGE_DAY + 0)
-
-    MESSAGE_HOUR=$(date +%H -d ${created_at})
-    MESSAGE_HOUR=$(expr $MESSAGE_HOUR + 0)
-
-    MESSAGE_MINUTE=$(date +%M -d ${created_at})
-    MESSAGE_MINUTE=$(expr $MESSAGE_MINUTE + 0)
-
-
-    DIFF_HOUR=$(expr $MESSAGE_HOUR - $ALLOWED_HOUR)
-    DIFF_MINUTE=$(expr $MESSAGE_MINUTE - $ALLOWED_MINUTE)
-    DIFF_DAY=$(expr $MESSAGE_DAY - $ALLOWED_DAY)
-
-    id=$(jq -r '.id' <<< "${line}")
-    body=$(jq -r '.body' <<< "${line}")
-    clean_body=${body//_/}
-  # next, replace spaces with underscores
-    clean_body=${clean_body// /_}
-    # now, clean out anything that's not alphanumeric or an underscore
-    clean_body=${clean_body//[^a-zA-Z0-9_]/}
-
-
-    username=$(jq -r '.username' <<< "${line}")
-    sentiment=$(jq -r '.sentiment' <<< "${line}")
-    url="https://stocktwits.com/$username/message/$id"
-
-    key_id="\"id\": $id"
-    key_ticker=$(keyify 'ticker' $ticker)
-    key_url=$(keyify 'url' $url)
-    key_body=$(keyify 'body' $clean_body)
-    key_created_at=$(keyify 'created_at' $created_at)
-    key_sentiment=$(keyify 'sentiment' $sentiment)
-
-    if [ ! "$DIFF_MINUTE" -lt "0" ] && [ ! "$DIFF_HOUR" -lt "0" ] && [ ! "$DIFF_DAY" -lt "0" ]
-    then
-    #  echo "MESSAGE_TIME: HOUR: ${MESSAGE_HOUR}, MINUTE: ${MESSAGE_MINUTE}"
-      echo -e "{$key_id,$key_ticker,$key_url,$key_body,$key_created_at,$key_sentiment}" >> $RESULTS_FILE
-    fi
-  done
-
-else
-  check_rate_limited $status $ticker
-fi
-done <$FILENAME
-
+echo "ALLOWED TIME: hour: ${ALLOWED_HOUR}, minute: ${ALLOWED_MINUTE}"
+#
+# cd "$(dirname "$0")"
+#
+#
+# while read ticker; do
+# response=$(curl -X GET https://api.stocktwits.com/api/2/streams/symbol/$ticker.json)
+# status=$(jq -r '.response.status' <<< "${response}")
+#
+# if [ ${status} == '200' ]
+# then
+#   symbol=$(jq -r '.symbol.symbol' <<< "${response}")
+#   messages=$(jq -r '.messages' <<< "${response}")
+#
+#   parsed_messages=$(jq -r '[ .[] | {id, body, created_at, username: .user.username, sentiment: .entities.sentiment.basic}]' <<< "${messages}")
+#
+#   jq -c '.[]' <<< "${parsed_messages}" | while read line; do
+#
+#     created_at=$(jq -r '.created_at' <<< "${line}")
+#     MESSAGE_DAY=$(date +%j -d ${created_at})
+#     MESSAGE_DAY=$(expr $MESSAGE_DAY + 0)
+#
+#     MESSAGE_HOUR=$(date +%H -d ${created_at})
+#     MESSAGE_HOUR=$(expr $MESSAGE_HOUR + 0)
+#
+#     MESSAGE_MINUTE=$(date +%M -d ${created_at})
+#     MESSAGE_MINUTE=$(expr $MESSAGE_MINUTE + 0)
+#
+#
+#     DIFF_HOUR=$(expr $MESSAGE_HOUR - $ALLOWED_HOUR)
+#     DIFF_MINUTE=$(expr $MESSAGE_MINUTE - $ALLOWED_MINUTE)
+#     DIFF_DAY=$(expr $MESSAGE_DAY - $ALLOWED_DAY)
+#
+#     id=$(jq -r '.id' <<< "${line}")
+#     body=$(jq -r '.body' <<< "${line}")
+#     clean_body=${body//_/}
+#   # next, replace spaces with underscores
+#     clean_body=${clean_body// /_}
+#     # now, clean out anything that's not alphanumeric or an underscore
+#     clean_body=${clean_body//[^a-zA-Z0-9_]/}
+#
+#
+#     username=$(jq -r '.username' <<< "${line}")
+#     sentiment=$(jq -r '.sentiment' <<< "${line}")
+#     url="https://stocktwits.com/$username/message/$id"
+#
+#     key_id="\"id\": $id"
+#     key_ticker=$(keyify 'ticker' $ticker)
+#     key_url=$(keyify 'url' $url)
+#     key_body=$(keyify 'body' $clean_body)
+#     key_created_at=$(keyify 'created_at' $created_at)
+#     key_sentiment=$(keyify 'sentiment' $sentiment)
+#
+#     if [ ! "$DIFF_MINUTE" -lt "0" ] && [ ! "$DIFF_HOUR" -lt "0" ] && [ ! "$DIFF_DAY" -lt "0" ]
+#     then
+#     #  echo "MESSAGE_TIME: HOUR: ${MESSAGE_HOUR}, MINUTE: ${MESSAGE_MINUTE}"
+#       echo -e "{$key_id,$key_ticker,$key_url,$key_body,$key_created_at,$key_sentiment}" >> $RESULTS_FILE
+#     fi
+#   done
+#
+# else
+#   check_rate_limited $status $ticker
+# fi
+# done <$FILENAME
+#
 # grep_results
-
-rm $RESULTS_FILE
-
-
-prepare_json_file
+#
+# rm $RESULTS_FILE

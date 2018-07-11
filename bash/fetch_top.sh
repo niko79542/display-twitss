@@ -7,8 +7,8 @@ INTERMEDIARY="validmsgs.txt"
 JSONIFIED_FILE="../client/build/results.json"
 declare -a PHRASES=("told_y" "for_sure")
 access_token="186cf7e6139a9d6f52af419c3e8c69e85865b84b"
-FILENAME="TOP.txt"
-CRON_FREQ=3 # in minutes
+FILENAME=$1
+CRON_FREQ=$2 # in minutes
 touch $RESULTS_FILE
 touch $INTERMEDIARY
 
@@ -44,7 +44,7 @@ function set_last_valid_time_and_filename () {
 function grep_results () {
   for PHRASE in "${PHRASES[@]}"
     do
-       grep -i "${PHRASE}" $RESULTS_FILE | ifne mail -s "${FILENAME} results" "${EMAIL}"
+       # grep -i "${PHRASE}" $RESULTS_FILE | ifne mail -s "${FILENAME} results" "${EMAIL}"
        grep -i "${PHRASE}" $RESULTS_FILE >> $INTERMEDIARY
     done
 }
@@ -151,6 +151,5 @@ done <$FILENAME
 grep_results
 
 rm $RESULTS_FILE
-
 
 prepare_json_file

@@ -1,6 +1,6 @@
 ### Introduction.
 
-Fetches every fucking message on  Stocktwats.com for the top 1200 Nasdaq/NYSE stocks by volume from some random day in March.   
+Fetches every message on  Stocktwits.com for the top 1200 Nasdaq/NYSE stocks by volume from some random day in March.   
 Was originally going to try and do some machine learning, but the posts on stocktwats are so short/garbage/spammy, I figure its not worth it.
 
 Instead, we can do a simple find operation on all the messages.
@@ -22,13 +22,13 @@ $ sudo apt-get install moreutils
 
 ### Usage
 
-Change lines 4 and 5 of fetch_messages.sh.  MY_PHRASE are the keywords you're looking for.  Please pardon my shittily written code, and if anyone wants to improve upon this, be my guest.
+Change lines 4 and 5 of fetch_messages.sh.  MY_PHRASE are the keywords you're looking for.
 
 
 eg...
 ```bash
 #  fetch_messages.sh
-EMAIL=cuck.sack@gmail.com
+EMAIL=bob.bill@gmail.com
 MY_PHRASE="told you so"
 ```
 
@@ -37,7 +37,7 @@ Make script executable
 $ chmod +X [PATH_TO]/fetch_messages.sh
 ```
 
-Next.  Setup a cron job on ec2 or your own system.  Amazon is gay about spamming yourselfs emails from a script, so Im just using my own laptop for now.  
+Next.  Setup a cron job on ec2 or your own system.
 Here's the quick and dirty to setup the cron job.
 ```bash
 $ crontab -e
@@ -110,3 +110,12 @@ $ curl -X GET -u bob_sacomano -p https://api.stocktwits.com/api/2/oauth/authoriz
 
 # host password is the consumer secret.  Documentation here;
 https://api.stocktwits.com/developers/docs/api#oauth-authorize-docs
+
+### To run the server permenantly on ec2
+
+```bash
+$ killall -9 node $ kill all node processes
+$ node index.js
+$ #press CTRL + Z
+$ bg %1
+```

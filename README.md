@@ -1,4 +1,4 @@
-### Introduction. 05.09.22
+### Introduction. 05.09.2022
 
 Fetches every message on  Stocktwits.com for the top 1200 Nasdaq/NYSE stocks by volume from some random day in March.   
 Was originally going to try and do some machine learning, but the posts on stocktwats are so short/garbage/spammy, I figure its not worth it.
